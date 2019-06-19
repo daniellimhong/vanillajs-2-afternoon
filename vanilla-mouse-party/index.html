@@ -58,7 +58,55 @@
 </body>
 
 <script>
+    const mousePosition = { x: 0, y: 0 };
+    let drawId; 
 
-</script>
+    function getRandomNumber (min, max) {
+        return Math.round(Math.random() * (max - min + 1)) + min;
+    };
 
+    window.addEventListener('mousemove', function(mouseMoveEvent){
+        mousePosition.x = mouseMoveEvent.pageX;
+        mousePosition.y = mouseMoveEvent.pageY;
+    }); // Need to clairify syntax in ()'s 
+
+    function draw(){
+        return setInterval(function(){
+                const container = document.getElementById("wrap"); // 1st try - let instead of const, const is more appropriate
+                const color = `background:rgb(${getRandomNumber(
+                    0,
+                    255
+                )},${getRandomNumber(0, 255)}, ${getRandomNumber(0, 255)});`; 
+                const ballSize = getRandomNumber(10, 30);
+                const size = `height:${ballSize}px; width:${ballSize}px;`;
+                const left = `left:${getRandomNumber(
+                     mousePosition.x - ballSize,
+                     mousePosition.x
+                )}px;`;
+                const top = `top:${getRandomNumber(
+                  mousePosition.y - ballSize,
+                  mousePosition.y
+                )}px; `;
+                const style = `${left}${top}${color}${size}`;
+
+                const ball = document.createElement("div"); // 1st try, again use const instead of let
+                ball.classList.add("ball"); // used setAttribute instead of (elem.classlist.add())
+                ball.style = style; // used setAttribute instead of (elem.style =)
+
+                ball.addEventListener("animationend", function(e) {
+                    e.target.remove();
+                }); //used wrong method/syntax: container.addEventListener('animationend', function(animationEndEvent){e.target.remove();}
+                
+                    container.appendChild(ball); //  used document.body (as default) instead of container
+            })
+        };
+
+    window.addEventListener('mouseover', function(){
+        drawId = draw();
+    });
+
+    window.addEventListener('mouseout', function(){
+        clearInterval(drawId);
+    });
+    </script>
 </html>
